@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Профиль</h2>
+<div class="profile-header">
+    <img src="/static/uploads/{{ user[1] }}" class="avatar big-avatar" />
+    <h3>{{ user[0] }}</h3>
+</div>
+<form method="POST" enctype="multipart/form-data">
+    <input name="nickname" value="{{ user[0] }}" required>
+    <input type="file" name="profile_pic">
+    <button type="submit">Обновить</button>
+</form>
+
+<h3>Мои посты</h3>
+{% for post in posts %}
+<div class="post">
+    <p>{{ post[0] }}</p>
+    {% if post[1] %}
+    <img src="/static/uploads/{{ post[1] }}" class="post-img"/>
+    {% endif %}
+    <div class="actions">
+        👍 {{ post[2] }} | 👎 {{ post[3] }}
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

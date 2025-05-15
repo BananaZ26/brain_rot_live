@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brain-Rot Live</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">BRAIN-ROT</div>
+        <nav>
+            <a href="/">Лента</a>
+            {% if session.user_id %}
+                <a href="/post">Создать пост</a>
+                <a href="/profile">Профиль</a>
+                <a href="/logout">Выйти</a>
+            {% else %}
+                <a href="/login">Войти</a>
+                <a href="/register">Регистрация</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

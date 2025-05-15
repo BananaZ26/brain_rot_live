@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="content-wrapper">
+    <div class="feed">
+        {% for post in posts %}
+        <div class="post">
+            <div class="post-header">
+                <img src="/static/uploads/{{ post[6] }}" class="avatar" />
+                <span>{{ post[5] }}</span>
+            </div>
+            <p>{{ post[1] }}</p>
+            {% if post[2] %}
+            <img src="/static/uploads/{{ post[2] }}" class="post-img"/>
+            {% endif %}
+            <div class="actions" data-post-id="{{ post[0] }}">
+                <a href="{{ url_for('like', post_id=post[0]) }}" class="like-btn">👍 <span class="like-count">{{ post[3] }}</span></a>
+                <a href="{{ url_for('dislike', post_id=post[0]) }}" class="dislike-btn">👎 <span class="dislike-count">{{ post[4] }}</span></a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <aside class="sidebar">
+        <h3>🔥 Топ посты</h3>
+        {% for top in top_posts %}
+        <div class="top-post">
+            <p>{{ top[1][:100] }}...</p>
+            {% if top[2] %}
+            <img src="/static/uploads/{{ top[2] }}" class="thumb"/>
+            {% endif %}
+            <small>❤️ {{ top[3] }} от {{ top[4] }}</small>
+        </div>
+        {% endfor %}
+    </aside>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.querySelectorAll('.actions').forEach(actionBox => {
+        const postId = actionBox.dataset.postId;
+    
+        const likeBtn = actionBox.querySelector('.like-btn');
+        const dislikeBtn = actionBox.querySelector('.dislike-btn');
+    
+        likeBtn.onclick = () => sendVote('like');
+        dislikeBtn.onclick = () => sendVote('dislike');
+    
+        function sendVote(voteType) {
+            fetch('/api/vote', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ post_id: postId, vote: voteType })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.likes !== undefined) {
+                    actionBox.querySelector('.like-count').textContent = data.likes;
+                    actionBox.querySelector('.dislike-count').textContent = data.dislikes;
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+
+
